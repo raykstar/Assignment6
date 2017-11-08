@@ -1,0 +1,83 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+    int name;
+    int data;
+    struct node *next;
+};
+typedef struct{
+    struct node* front, * end;
+    int count;
+}queue;
+
+struct node* create(int s,int x){
+    struct node* new= (struct node* )malloc(sizeof(struct node));
+    new->name  = s;
+    new->next = NULL;
+    new->data = x;
+    return new;
+}
+
+queue* insert(queue* q, int s,int x){
+    struct node* new = create(s,x);
+    if(q->front == NULL) q->front = q->end =new;
+    else{
+        q->end->next = new;
+        q->end = new;
+        new->next = q->front;
+    }
+    q->count++;
+    return q;
+}
+
+int del(queue* q,int key){
+     struct node* temp =q->front;
+     int k = key-2;
+     while(k--){
+         temp = temp->next;
+     }
+     printf("%c got eliminated!\n",(char)temp->next->name);
+     k = temp->next->data;
+     temp->next = temp->next->next;
+     q->front  = temp->next;
+     q->count--;
+     return k;
+}
+
+void disp(queue* q){
+    struct node* temp = q->front;
+    while(temp->next!=q->front){
+        printf("%c  %d \n",(char)temp->name,temp->data);
+
+        temp=temp->next;
+    }
+    printf("%c  %d \n",(char)temp->name,temp->data);
+
+
+}
+
+
+
+int main(){
+    queue* q = (queue*)malloc(sizeof(queue));
+    q->front  = NULL; q->end = NULL; q->count=0;
+    int n;
+    printf("Enter the number of people:: ");
+    scanf("%d",&n);
+    while(n--){
+        int x,s;
+        printf("Enter name and number chosen:: ");
+        scanf("%d %d",&s,&x);
+        q = insert(q,s,x);
+    }
+    disp(q);
+    printf("Enter initial key:: ");
+    int key;
+    scanf("%d",&key);
+    while(q->count!=1){
+        printf("%d  ",key);
+        key = del(q,key);
+    }
+    printf("\n\n%c is still standing\n\n",q->front->name);
+}
